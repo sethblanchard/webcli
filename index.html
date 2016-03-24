@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>$: _</title>
+		<meta charset="utf-8"/>
+	</head>
+	<body>
+		<h1>Web CLI ➜&nbsp;_</h1>
+		
+		<script   src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
+
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<script>
+			var test = 2;
+		</script>
+		<script>
+		  var socket = io('http://localhost:7123');
+		  socket.on('from_cli', function (data) {
+
+		  	//globally scoped eval so we can get at things like test... 
+		  	var geval = eval;
+
+		    var result = { err: null, result: null };
+
+		    try{
+		    	console.log(data.line);
+		    	result.result = geval(data.line);
+		    	console.log(result.result);
+		    }catch(exp){
+		    	console.error(exp);
+		    	result.err = exp.toString();
+		    }
+
+	    	//will need to be a callback...
+		    socket.emit('from_browser', result);
+		  });
+		</script>
+	</body>
+</html>
